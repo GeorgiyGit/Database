@@ -1,0 +1,16 @@
+﻿@using Database.Models
+@model Event;
+
+<secion class="text-center">
+    <h1>@Model.Title</h1>
+</secion>
+<div>
+    <p>@Model.Text</p>
+    <p>Price @Model.Price$</p>
+</div>
+<div class="sticz">
+    @foreach(var type in Model.Types)
+    {
+        <button class="btn btn-outline-secondary">@type.Name</button>
+    }
+</div>

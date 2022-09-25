@@ -1,0 +1,37 @@
+﻿@using Database.Models
+@model IEnumerable<Event>;
+
+<h1 class="text-center">Events List</h1>
+
+<table class="table mt-4">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Title</th>
+            <th scope="col">Creation Time</th>
+            <th scope="col">Event Time</th>
+            <th scope="col">Price</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var _event in Model)
+        {
+            <tr>
+                <th class="align-middle" scope="row">@_event.Id</th>
+                <td class="align-middle">@_event.Title</td>
+                <td class="align-middle">@_event.CreationTime</td>
+                <td class="align-middle">@_event.EventTime</td>
+                <td class="align-middle">@_event.Price</td>
+                <td class="align-middle">
+                    <div class="btn-group" role="group">
+                        <a class="btn btn-warning">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@_event.Id" class="btn btn-danger">Delete</a>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a class="btn btn-primary">Create New Phone</a>

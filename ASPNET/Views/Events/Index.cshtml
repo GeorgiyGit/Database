@@ -1,0 +1,31 @@
+﻿@model EventsViewModel;
+
+
+<div>
+    <h1 class="text-center my-4">New Events</h1>
+    <div class="my-3">
+        <h2>Types</h2>
+        <div>
+            @foreach(var type in Model.EventTypes)
+            {
+                <button class="btn btn-outline-secondary">@type.Name</button>
+            }
+        </div>
+    </div>
+    <div class="row">
+        
+        @foreach(var _event in Model.Events)
+        {
+            <div class="col">
+                <div class="card" style="width: 18rem;">
+                    <img src="..." class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">@_event.Title</h5>
+                        <p class="card-text">@_event.Price</p>
+                        <a asp-action="Details" asp-route-id="@_event.Id" class="btn btn-primary" aria-current="true">Details</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

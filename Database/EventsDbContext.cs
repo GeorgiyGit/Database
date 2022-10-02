@@ -15,7 +15,7 @@ namespace Database
         public virtual DbSet<EventType> EventTypes { get; set; }
         public virtual DbSet<Image> Images { get; set; }
         public virtual DbSet<User> Users { get; set; }
-
+        public virtual DbSet<Place> Places { get; set; }
         public EventsDbContext(DbContextOptions options) : base(options)
         {
         }
@@ -31,10 +31,8 @@ namespace Database
             OnUserCreating(modelBuilder);
             OnCommentCreating(modelBuilder);
             OnEventCreating(modelBuilder);
-
-            modelBuilder.Entity<EventType>().Property(et => et.Name)
-                                            .HasMaxLength(100)
-                                            .IsRequired(true);
+            OnEventTypeCreating(modelBuilder);
+            OnPlaceCreating(modelBuilder);
         }
         private void OnUserCreating(ModelBuilder modelBuilder)
         {
@@ -63,10 +61,10 @@ namespace Database
                                        .WithOne(c => c.Owner);
 
             modelBuilder.Entity<User>().HasMany(u => u.LikedComments)
-                                       .WithMany(c => c.LikeUsers);
+                                       .WithMany(c => c.LikedUsers);
 
             modelBuilder.Entity<User>().HasMany(u => u.DislikedComments)
-                                       .WithMany(c => c.DislikeUsers);
+                                       .WithMany(c => c.DislikedUsers);
 
 
             modelBuilder.Entity<User>().HasMany(u => u.CreatedEvents)
@@ -101,6 +99,13 @@ namespace Database
                                           .OnDelete(DeleteBehavior.Restrict);
 
 
+            modelBuilder.Entity<Comment>().HasOne(c => c.Place)
+                                          .WithMany(p => p.Comments)
+                                          .IsRequired(false);
+
+            modelBuilder.Entity<Comment>().HasOne(c => c.Event)
+                                          .WithMany(e=>e.Comments)
+                                          .IsRequired(false);
 
             modelBuilder.Entity<Comment>().Property(c => c.Likes)
                                           .IsRequired(true);
@@ -119,6 +124,37 @@ namespace Database
                                         .HasMaxLength(3000)
                                         .IsRequired(true);
 
+            modelBuilder.Entity<Event>().Property(e => e.Rating)
+                                        .IsRequired(true)
+                                        .HasDefaultValue(1);
+
+            modelBuilder.Entity<Event>().Property(e => e.IsOnline)
+                                        .IsRequired(true);
+
+            modelBuilder.Entity<Event>().Property(e => e.IsModerated)
+                                        .IsRequired(true);
+
+            modelBuilder.Entity<Event>().Property(e => e.Site)
+                                        .HasMaxLength(500)
+                                        .IsRequired(false);
+
+            modelBuilder.Entity<Event>().HasOne(e => e.Place)
+                                        .WithMany(p => p.Events)
+                                        .IsRequired(false);
+
+            modelBuilder.Entity<Event>().Property(e => e.Facebook)
+                                        .HasMaxLength(200)
+                                        .IsRequired(false);
+
+            modelBuilder.Entity<Event>().Property(e => e.Instagram)
+                                        .HasMaxLength(200)
+                                        .IsRequired(false);
+
+            modelBuilder.Entity<Event>().Property(e => e.Rating)
+                                        .HasDefaultValue(1)
+                                        .IsRequired(true);
+
+
             modelBuilder.Entity<Event>().Property(e => e.CreationTime)
                                         .IsRequired(true);
 
@@ -133,7 +169,74 @@ namespace Database
 
             modelBuilder.Entity<Event>().HasMany(e => e.Images)
                                         .WithOne(i => i.Event)
+                                        .IsRequired(false)
+                                        .OnDelete(DeleteBehavior.Cascade);
+        }
+
+        private void OnEventTypeCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<EventType>().Property(et => et.Name)
+                                            .HasMaxLength(100)
+                                            .IsRequired(true);
+
+            modelBuilder.Entity<EventType>().HasOne(c => c.Parent)
+                                            .WithMany(c => c.SubEventTypes)
+                                            .HasForeignKey(c => c.ParentId)
+                                            .IsRequired(false)
+                                            .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<EventType>().HasMany(et => et.Places)
+                                            .WithMany(p => p.PlaceTypes);
+        }
+
+        private void OnPlaceCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Place>().Property(p => p.Name)
+                                        .HasMaxLength(100)
+                                        .IsRequired(true);
+
+            modelBuilder.Entity<Place>().Property(p => p.Rating)
+                                        .IsRequired(true)
+                                        .HasDefaultValue(1);
+
+            modelBuilder.Entity<Place>().Property(p => p.Text)
+                                        .HasMaxLength(3000)
+                                        .IsRequired(true);
+
+            modelBuilder.Entity<Place>().Property(p => p.Route)
+                                        .HasMaxLength(200)
+                                        .IsRequired(true);
+
+            modelBuilder.Entity<Place>().Property(p => p.Site)
+                                        .HasMaxLength(500)
                                         .IsRequired(false);
+
+            modelBuilder.Entity<Place>().Property(p => p.Facebook)
+                                        .HasMaxLength(500)
+                                        .IsRequired(false);
+
+            modelBuilder.Entity<Place>().Property(p => p.Instagram)
+                                        .HasMaxLength(500)
+                                        .IsRequired(false);
+
+            modelBuilder.Entity<Place>().Property(p => p.GoogleMaps)
+                                        .HasMaxLength(500)
+                                        .IsRequired(true);
+
+            modelBuilder.Entity<Place>().HasOne(p => p.Owner)
+                                        .WithMany(u => u.CreatedPlaces)
+                                        .IsRequired(true);
+
+            modelBuilder.Entity<Place>().HasMany(p => p.LikedUsers)
+                                        .WithMany(u => u.LikedPlaces);
+
+            modelBuilder.Entity<Place>().HasMany(p => p.FavoriteUsers)
+                                        .WithMany(u => u.FavoritePlaces);
+
+            modelBuilder.Entity<Place>().HasMany(p => p.Images)
+                                        .WithOne(i => i.Place)
+                                        .IsRequired(false);
+                                        
         }
     }
 }

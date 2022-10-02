@@ -15,19 +15,22 @@ namespace Database.Models
 
         public int? ParentId { get; set; }
         public Comment? Parent { get; set; }
-        public ICollection<Comment> SubComments { get; } = new List<Comment>();
+        public ICollection<Comment> SubComments { get; }
 
         public User Owner { get; set; }
 
         public int Likes { get; set; }
         public int Dislikes { get; set; }
-        public ICollection<User> LikeUsers { get; set; }
-        public ICollection<User> DislikeUsers { get; set; }
+        public ICollection<User> LikedUsers { get; set; }
+        public ICollection<User> DislikedUsers { get; set; }
  
+
+        public Event? Event { get; set; }
+        public Place? Place { get; set; }
         public Comment()
         {
-            LikeUsers = new HashSet<User>();
-            DislikeUsers = new HashSet<User>();
+            LikedUsers = new HashSet<User>();
+            DislikedUsers = new HashSet<User>();
             SubComments = new HashSet<Comment>();
             CreationTime = DateTime.Now;
         }

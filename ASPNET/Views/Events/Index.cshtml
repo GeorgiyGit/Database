@@ -18,12 +18,16 @@
         {
             <div class="col">
                 <div class="card" style="width: 18rem;">
-                    <img src="..." class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">@_event.Title</h5>
-                        <p class="card-text">@_event.Price</p>
+                    <img src="@_event.Images.First()?.Path" class="card-img-top" alt="@_event.Images.First()?.Title">
+                    <div class="cb-pink">
+                        <h5>@_event.Title</h5>
+                        <p>@_event.EventTime</p>
+                        <p>@_event.Place?.Route</p>
+                        <div class="row justify-content-center">
                         <a asp-action="Details" asp-route-id="@_event.Id" class="btn btn-primary" aria-current="true">Details</a>
+                        </div>
                     </div>
+
                 </div>
             </div>
         }

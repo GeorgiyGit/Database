@@ -14,5 +14,59 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+}
+.cb-white {
+    background: #FBF7F4;
+}
+.cf-white {
+    color: #FBF7F4;
+}
+
+.cb-green {
+    background: #6C9A8B;
+}
+.cf-green {
+    color: #6C9A8B;
+}
+
+.cb-pink {
+    background: #E8998D;
+}
+.cf-pink {
+    color: #E8998D;
+}
+
+.cb-rose {
+    background: #EED2CC;
+}
+.cf-rose {
+    color: #EED2CC;
+}
+
+.cb-brown {
+    background: #A1683A;
+}
+
+.cf-brown {
+    color: #A1683A;
+}
+
+
+.a-events:hover,
+.a-events:active {
+    color: #E8998D;
+}
+
+.a-text-green-h:hover,
+.a-text-green-h:active,
+.a-text-green-h:enabled {
+    color: #6C9A8B;
+}
+
+#navbarDropdownMenuLink {
+    color: #FBF7F4;
+}
+#navbarDropdownMenuLink:hover {
+    color: #6C9A8B;
 }

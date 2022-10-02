@@ -1,0 +1,50 @@
+﻿@using Database.Models
+@model IEnumerable<Place>;
+
+<h1 class="text-center">Place List</h1>
+
+<table class="table mt-4">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Route</th>
+            <th scope="col">Site</th>
+            <th scope="col">Facebook</th>
+            <th scope="col">Instagram</th>
+            <th scope="col">Google maps</th>
+            <th scope="col">Owner</th>
+            <th scope="col">Place Types</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var place in Model)
+        {
+            <tr>
+                <th class="align-middle" scope="row">@place.Id</th>
+                <td class="align-middle">@place.Name</td>
+                <td class="align-middle">@place.Route</td>
+                <td class="align-middle">@place.Site</td>
+                <td class="align-middle">@place.Facebook</td>
+                <td class="align-middle">@place.Instagram</td>
+                <td class="align-middle">@place.GoogleMaps</td>
+                <td class="align-middle">@place.Owner?.Name</td>
+                 <td class="align-middle">
+                    @foreach(var type in @place.PlaceTypes)
+                    {
+                        <p>@type.Name</p>
+                    }
+                 </td>
+                <td class="align-middle">
+                    <div class="btn-group" role="group">
+                        <a asp-action="Edit" asp-route-id="@place.Id" class="btn btn-warning">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@place.Id" class="btn btn-danger">Delete</a>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Create" class="btn btn-primary">Create New Event</a>

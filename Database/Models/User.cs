@@ -22,6 +22,10 @@ namespace Database.Models
         public ICollection<Event> LikedEvents { get; set; }
         public ICollection<Event> FavoriteEvents { get; set; }
 
+        public ICollection<Place> CreatedPlaces { get; set; }
+        public ICollection<Place> LikedPlaces { get; set; }
+        public ICollection<Place> FavoritePlaces { get; set; }
+
         public Image? Avatar { get; set; }
         public User()
         {
@@ -32,6 +36,10 @@ namespace Database.Models
             CreatedEvents = new HashSet<Event>();
             LikedEvents = new HashSet<Event>();
             FavoriteEvents = new HashSet<Event>();
+
+            CreatedPlaces = new HashSet<Place>();
+            LikedPlaces = new HashSet<Place>();
+            FavoritePlaces = new HashSet<Place>();
 
             CreationTime = DateTime.Now;
         }

@@ -1,51 +1,52 @@
-﻿@model CreatePlace;
+﻿@using Database.Models
+@model Place;
 <h1 class="text-center mb-2">Create New Place</h1>
 
 <form asp-action="Create" method="post" class="row g-3">
     <div class="mb-3">
-        <label asp-for="Place.Name" class="form-label">Name</label>
-        <input type="text" asp-for="Place.Name" class="form-control">
-        <span asp-validation-for="Place.Name" class="text-danger"></span>
+        <label asp-for="Name" class="form-label">Name <span class="text-danger">*</span></label>
+        <input type="text" asp-for="Name" class="form-control">
+        <span asp-validation-for="Name" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label asp-for="Place.Text" class="form-label">Text</label>
-        <textarea asp-for="Place.Text" class="form-control" rows="5"></textarea>
-        <span asp-validation-for="Place.Text" class="text-danger"></span>
+        <label asp-for="Text" class="form-label">Text <span class="text-danger">*</span></label>
+        <textarea asp-for="Text" class="form-control" rows="5"></textarea>
+        <span asp-validation-for="Text" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label asp-for="Place.Route" class="form-label">Route</label>
-        <input type="text" asp-for="Place.Route" class="form-control">
-        <span asp-validation-for="Place.Route" class="text-danger"></span>
+        <label asp-for="Route" class="form-label">Route <span class="text-danger">*</span></label>
+        <input type="text" asp-for="Route" class="form-control">
+        <span asp-validation-for="Route" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label asp-for="Place.Site" class="form-label">Site</label>
-        <input type="url" asp-for="Place.Site" class="form-control">
-        <span asp-validation-for="Place.Site" class="text-danger"></span>
+        <label asp-for="Site" class="form-label">Site</label>
+        <input type="url" asp-for="Site" class="form-control">
+        <span asp-validation-for="Site" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label asp-for="Place.Facebook" class="form-label">Facebook</label>
-        <input type="url" asp-for="Place.Facebook" class="form-control">
-        <span asp-validation-for="Place.Facebook" class="text-danger"></span>
+        <label asp-for="Facebook" class="form-label">Facebook</label>
+        <input type="url" asp-for="Facebook" class="form-control">
+        <span asp-validation-for="Facebook" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label asp-for="Place.Instagram" class="form-label">Instagram</label>
-        <input type="url" asp-for="Place.Instagram" class="form-control">
-        <span asp-validation-for="Place.Instagram" class="text-danger"></span>
+        <label asp-for="Instagram" class="form-label">Instagram</label>
+        <input type="url" asp-for="Instagram" class="form-control">
+        <span asp-validation-for="Instagram" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label asp-for="Place.GoogleMaps" class="form-label">GoogleMaps</label>
-        <input type="url" asp-for="Place.GoogleMaps" class="form-control">
-        <span asp-validation-for="Place.GoogleMaps" class="text-danger"></span>
+        <label asp-for="GoogleMaps" class="form-label">GoogleMaps <span class="text-danger">*</span></label>
+        <input type="url" asp-for="GoogleMaps" class="form-control">
+        <span asp-validation-for="GoogleMaps" class="text-danger"></span>
     </div>
     <div class="mb-3">
         <button asp-action="Manage" class="btn btn-secondary">Back</button>
-        @if (Model.IsEdit)
+        @if (Model!=null)
         {
-            <input type="url" hidden="hidden" asp-for="Place.Id" value="@Model.Place.Id">
-            <input hidden="hidden" asp-for="Place.Images" value="@Model.Place.Images">
+            <input type="url" hidden="hidden" asp-for="Id" value="@Model.Id">
+            <input hidden="hidden" asp-for="Images" value="@Model.Images">
             <button type="submit" asp-action="Edit" class="btn btn-warning">Save</button>
         }
-        @if(!Model.IsEdit)
+        @if(Model==null)
         {
             <button type="submit" class="btn btn-primary">Create</button>
         }

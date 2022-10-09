@@ -28,6 +28,12 @@
                         <li class="nav-item">
                             <a class="nav-link cf-white a-events" asp-area="" asp-controller="Events" asp-action="Index">Events</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link cf-white a-places" asp-area="" asp-controller="Places" asp-action="Index">Places</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link cf-white a-places" asp-area="" asp-controller="FavoriteEvents" asp-action="Index">Favorite</a>
+                        </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle"  href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Manage
@@ -35,6 +41,7 @@
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                                 <li><a asp-controller="Events" asp-action="Manage" class="dropdown-item" type="button">Events</a></li>
                                 <li><a asp-controller="Places" asp-action="Manage" class="dropdown-item" type="button">Places</a></li>
+                                <li><a asp-controller="Genres" asp-action="Manage" class="dropdown-item" type="button">Types</a></li>
                             </ul>
                         </li>
                     </ul>

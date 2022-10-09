@@ -12,7 +12,7 @@ namespace Database
     {
         public virtual DbSet<Comment> Comments { get; set; }
         public virtual DbSet<Event> Events { get; set; }
-        public virtual DbSet<EventType> EventTypes { get; set; }
+        public virtual DbSet<Models.Genre> Genres { get; set; }
         public virtual DbSet<Image> Images { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Place> Places { get; set; }
@@ -140,6 +140,7 @@ namespace Database
 
             modelBuilder.Entity<Event>().HasOne(e => e.Place)
                                         .WithMany(p => p.Events)
+                                        .HasForeignKey(e=>e.PlaceId)
                                         .IsRequired(false);
 
             modelBuilder.Entity<Event>().Property(e => e.Facebook)
@@ -175,17 +176,17 @@ namespace Database
 
         private void OnEventTypeCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<EventType>().Property(et => et.Name)
+            modelBuilder.Entity<Models.Genre>().Property(et => et.Name)
                                             .HasMaxLength(100)
                                             .IsRequired(true);
 
-            modelBuilder.Entity<EventType>().HasOne(c => c.Parent)
+            modelBuilder.Entity<Models.Genre>().HasOne(c => c.Parent)
                                             .WithMany(c => c.SubEventTypes)
                                             .HasForeignKey(c => c.ParentId)
                                             .IsRequired(false)
                                             .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<EventType>().HasMany(et => et.Places)
+            modelBuilder.Entity<Models.Genre>().HasMany(et => et.Places)
                                             .WithMany(p => p.PlaceTypes);
         }
 

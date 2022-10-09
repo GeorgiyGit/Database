@@ -1,61 +1,66 @@
-﻿@model CreateModel;
+﻿@using Database.Models
+@model Event;
 <h1 class="text-center mb-2">Create New Event</h1>
 
 <form asp-action="Create" method="post" class="row g-3">
+    @Html.HiddenFor(model => model.Types)
     <div class="mb-3">
-        <label asp-for="Event.Title" class="form-label">Title <span class="text-danger">*</span></label>
-        <input type="text" asp-for="Event.Title" class="form-control">
-        <span asp-validation-for="Event.Title" class="text-danger"></span>
+        <label asp-for="Title" class="form-label">Title <span class="text-danger">*</span></label>
+        <input type="text" asp-for="Title" class="form-control">
+        <span asp-validation-for="Title" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label asp-for="Event.Text" class="form-label">Text <span class="text-danger">*</span></label>
-        <textarea asp-for="Event.Text" class="form-control" rows="5"></textarea>
-        <span asp-validation-for="Event.Text" class="text-danger"></span>
+        <label asp-for="Text" class="form-label">Text <span class="text-danger">*</span></label>
+        <textarea asp-for="Text" class="form-control" rows="5"></textarea>
+        <span asp-validation-for="Text" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label asp-for="Event.IsOnline" class="form-label">Is Online?
-            <input type="checkbox" asp-for="Event.IsOnline" class="form-control" id="isOnlineCheckBox">
+        <label asp-for="IsOnline" class="form-label">Is Online?
+            <input type="checkbox" asp-for="IsOnline" class="form-control" id="isOnlineCheckBox">
         </label>
         
-        <span asp-validation-for="Event.IsOnline" class="text-danger"></span>
+        <span asp-validation-for="IsOnline" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="Event.Site" class="form-label">Site</label>
-        <input type="url" asp-for="Event.Site" class="form-control">
-        <span asp-validation-for="Event.Site" class="text-danger"></span>
+        <label asp-for="Site" class="form-label">Site</label>
+        <input type="url" asp-for="Site" class="form-control">
+        <span asp-validation-for="Site" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label asp-for="Event.Facebook" class="form-label">Facebook</label>
-        <input type="url" asp-for="Event.Facebook" class="form-control">
-        <span asp-validation-for="Event.Facebook" class="text-danger"></span>
+        <label asp-for="Facebook" class="form-label">Facebook</label>
+        <input type="url" asp-for="Facebook" class="form-control">
+        <span asp-validation-for="Facebook" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label asp-for="Event.Instagram" class="form-label">Instagram</label>
-        <input type="url" asp-for="Event.Instagram" class="form-control">
-        <span asp-validation-for="Event.Instagram" class="text-danger"></span>
+        <label asp-for="Instagram" class="form-label">Instagram</label>
+        <input type="url" asp-for="Instagram" class="form-control">
+        <span asp-validation-for="Instagram" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="Event.EventTime" class="form-label">Event Time <span class="text-danger">*</span></label>
-        <input type="date" asp-for="Event.EventTime" class="form-control">
-        <span asp-validation-for="Event.EventTime" class="text-danger"></span>
+        <label asp-for="EventTime" class="form-label">Event Time <span class="text-danger">*</span></label>
+        <input type="date" asp-for="EventTime" class="form-control">
+        <span asp-validation-for="EventTime" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label asp-for="Event.Price" class="form-label">Price <span class="text-danger">*</span></label>
-        <input type="number" min="0" step="10" asp-for="Event.Price" class="form-control">
-        <span asp-validation-for="Event.Price" class="text-danger"></span>
+        <label asp-for="Price" class="form-label">Price <span class="text-danger">*</span></label>
+        <input type="number" min="0" step="10" asp-for="Price" class="form-control">
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="PlaceId" class="form-label">Places</label>
+        <select asp-for="PlaceId" asp-items="@ViewBag.PlaceTypeList" class="form-select"></select>
+        <span asp-validation-for="PlaceId" class="text-danger"></span>
     </div>
     <div class="mb-3">
         <button asp-action="Manage" class="btn btn-secondary">Back</button>
-        @if (Model.IsEdit)
+        @if (Model!=null)
         {
-            //<input type="url" hidden="hidden" asp-for="Event.Id" value="@Model.Event.Id">
-            //<input hidden="hidden" asp-for="Event.Images" value="@Model.Event.Images">
             <button type="submit" asp-action="Edit" class="btn btn-warning">Save</button>
-            @Html.HiddenFor(model => model.Event.Id)
+            @Html.HiddenFor(model => model.Id)
         }
-        @if(!Model.IsEdit)
+        @if (Model == null)
         {
             <button type="submit" class="btn btn-primary">Create</button>
         }

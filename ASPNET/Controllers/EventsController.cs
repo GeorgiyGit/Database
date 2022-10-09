@@ -3,6 +3,7 @@ using Database;
 using Database.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ASPNET.Controllers
 {
@@ -13,23 +14,22 @@ namespace ASPNET.Controllers
         public EventsController(EventsDbContext context)
         {
             this.context = context;
-
         }
 
         public IActionResult Index()
         {
-            var events = context.Events.Include(x => x.Images).ToList();
+            var events = context.Events.Include(x => x.Images).Include(e=>e.Owner).ToList();
 
             EventsViewModel eventsViewModel = new EventsViewModel();
             eventsViewModel.Events = events;
-            eventsViewModel.EventTypes = context.EventTypes.ToList();
+            eventsViewModel.EventTypes = context.Genres.ToList();
 
             return View(eventsViewModel);
         }
 
         public IActionResult Details(int id)
         {
-            if (id < 0) return BadRequest();
+            if (id <= 0) return BadRequest();
 
             var _event = context.Events.Where(x => x.Id == id).Include(x => x.Images).First();
 
@@ -40,28 +40,25 @@ namespace ASPNET.Controllers
 
         public IActionResult Manage()
         {
-            var events = context.Events.ToList();
+            var events = context.Events.Include(e => e.Place).Include(e => e.Owner).ToList();
 
             return View(events);
         }
 
         public IActionResult Create()
         {
-            var cm = new CreateModel();
-            cm.AllEventTypes = context.EventTypes.ToList();
-            cm.Owner = context.Users.First();
-            return View(cm);
+            var places = new SelectList(context.Places, nameof(Place.Id), nameof(Place.Name));
+            ViewBag.PlaceTypeList = places;
+
+
+
+            return View();
         }
         [HttpPost]
-        public IActionResult Create(CreateModel cm)
+        public IActionResult Create(Event ev)
         {
-            var ev = cm.Event;
-            cm.Owner = context.Users.First();
-            //ev.Types = cm.SelectedEventTypes.ToList();
-            ev.Owner = cm.Owner;
-            cm.Owner.CreatedEvents.Add(ev);
-
-            //if (!ModelState.IsValid) return View(ev);
+            ev.Owner = context.Users.First();
+            ev.Owner.CreatedEvents.Add(ev);
 
             Image img1 = new Image()
             {
@@ -97,37 +94,38 @@ namespace ASPNET.Controllers
             context.Events.Add(ev);
             context.SaveChanges();
             var events = context.Events.ToList();
+
+            TempData["ToastrMessage"] = "Event was created sucessfully!";
+
             return View(nameof(Manage), events);
+
+            
         }
 
         public IActionResult Edit(int id)
         {
             var ev = context.Events.Find(id);
+            ViewBag.PlaceTypeList = new SelectList(context.Places, nameof(Place.Id), nameof(Place.Name));
 
-            CreateModel cm = new CreateModel();
 
-            cm.AllEventTypes = context.EventTypes.ToList();
-            cm.Owner = context.Users.First();
-            cm.Event = ev;
-            cm.IsEdit = true;
-
-            return View(nameof(Create), cm);
+            return View(nameof(Create), ev);
         }
 
         [HttpPost]
-        public IActionResult Edit(CreateModel cm)
+        public IActionResult Edit(Event ev)
         {
-            var ev = cm.Event;
-            cm.Owner = context.Users.First();
-            //ev.Types = cm.SelectedEventTypes.ToList();
-            ev.Owner = cm.Owner;
-            cm.Owner.CreatedEvents.Add(ev);
+            ev.Owner = context.Users.First();
+
+            ev.Owner.CreatedEvents.Add(ev);
 
             //if (!ModelState.IsValid) return View(ev);
 
             context.Events.Update(ev);
             context.SaveChanges();
             var events = context.Events.ToList();
+
+            TempData["ToastrMessage"] = "Event was changed sucessfully!";
+
             return View(nameof(Manage), events);
         }
 
@@ -142,7 +140,9 @@ namespace ASPNET.Controllers
             context.Events.Remove(_event);
             context.SaveChanges();
 
-            return RedirectToAction(nameof(Manage)); //View("Index");
+            TempData["ToastrMessage"] = "Event was deleted sucessfully!";
+
+            return RedirectToAction(nameof(Manage));
         }
     }
 }

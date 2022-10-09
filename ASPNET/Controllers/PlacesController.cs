@@ -2,6 +2,8 @@
 using Database;
 using Database.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace ASPNET.Controllers
 {
@@ -15,68 +17,100 @@ namespace ASPNET.Controllers
         }
         public IActionResult Index()
         {
-            return View();
+            var events = context.Places.Include(x => x.Images).Include(e => e.Owner).ToList();
+
+            PlacesViewModel placeViewModel = new PlacesViewModel();
+            placeViewModel.Places = events;
+            placeViewModel.PlaceTypes = context.Genres.ToList();
+
+            return View(placeViewModel);
+        }
+
+        public IActionResult Details(int id)
+        {
+            if (id < 0) return BadRequest();
+
+            var place = context.Places.Where(x => x.Id == id).Include(x => x.Images).First();
+
+            if (place == null) return NotFound();
+
+            return View(place);
         }
 
         public IActionResult Manage()
         {
-            var events = context.Places.ToList();
+            var places = context.Places.Include(p => p.PlaceTypes).Include(e => e.Owner).ToList();
 
-            return View(events);
+            return View(places);
         }
 
         public IActionResult Create()
         {
-            var cp = new CreatePlace();
-            cp.AllPlaceTypes = context.EventTypes.ToList();
-            cp.Owner = context.Users.First();
-            return View(cp);
+            return View();
         }
         [HttpPost]
-        public IActionResult Create(CreatePlace cp)
+        public IActionResult Create(Place p)
         {
-            var pl = cp.Place;
-            cp.Owner = context.Users.First();
-            //ev.Types = cm.SelectedEventTypes.ToList();
-            pl.Owner = cp.Owner;
-            cp.Owner.CreatedPlaces.Add(pl);
+            p.Owner = context.Users.First();
 
-            //if (!ModelState.IsValid) return View(ev);
+            p.Owner.CreatedPlaces.Add(p);
 
-            context.Places.Add(pl);
+            Image img1 = new Image()
+            {
+                Path = @"https://images.wallpaperscraft.ru/image/single/most_zdaniia_ogni_384679_1600x1200.jpg",
+                Title = "First Image"
+            };
+
+            Image img2 = new Image()
+            {
+                Path = @"https://images.wallpaperscraft.ru/image/single/tserkov_ostrov_more_384743_1600x1200.jpg",
+                Title = "Second Image"
+            };
+
+            Image img3 = new Image()
+            {
+                Path = @"https://images.wallpaperscraft.ru/image/single/gora_oblaka_les_384664_1600x1200.jpg",
+                Title = "Third Image"
+            };
+
+            p.Images.Add(img1);
+            p.Images.Add(img2);
+            p.Images.Add(img3);
+
+            img1.Place = p;
+            img2.Place = p;
+            img3.Place = p;
+
+            context.Places.Add(p);
             context.SaveChanges();
             var events = context.Places.ToList();
+
+            TempData["ToastrMessage"] = "Place was created sucessfully!";
+
             return View(nameof(Manage), events);
         }
 
         public IActionResult Edit(int id)
         {
-            var pl = context.Places.Find(id);
+            var p = context.Places.Find(id);
 
-            CreatePlace cp = new CreatePlace();
-
-            cp.AllPlaceTypes = context.EventTypes.ToList();
-            cp.Owner = context.Users.First();
-            cp.Place = pl;
-            cp.IsEdit = true;
-
-            return View(nameof(Create), cp);
+            return View(nameof(Create), p);
         }
 
         [HttpPost]
-        public IActionResult Edit(CreatePlace cp)
+        public IActionResult Edit(Place p)
         {
-            var pl = cp.Place;
-            cp.Owner = context.Users.First();
-            //ev.Types = cm.SelectedEventTypes.ToList();
-            cp.Owner = cp.Owner;
-            cp.Owner.CreatedPlaces.Add(pl);
+            p.Owner = context.Users.First();
+            p.Owner.CreatedPlaces.Add(p);
 
             //if (!ModelState.IsValid) return View(ev);
 
-            context.Places.Update(pl);
+            context.Places.Update(p);
             context.SaveChanges();
             var places = context.Places.ToList();
+
+            TempData["ToastrMessage"] = "Place was changed sucessfully!";
+
             return View(nameof(Manage), places);
         }
 
@@ -84,12 +118,14 @@ namespace ASPNET.Controllers
         {
             if (id < 0) return BadRequest();
 
-            var place = context.Places.Find(id);
+            var place = context.Places.Where(p => p.Id == id).Include(p => p.Events).First();
 
             if (place == null) return NotFound();
 
             context.Places.Remove(place);
             context.SaveChanges();
+
+            TempData["ToastrMessage"] = "Place was deleted sucessfully!";
 
             return RedirectToAction(nameof(Manage)); //View("Index");
         }

@@ -1,8 +1,12 @@
 ﻿@using Database.Models
 @model IEnumerable<Event>;
+@{
+    Toster? toastrMsg = TempData["ToastrMessage"] as Toster;
+}
 
 <h1 class="text-center">Events List</h1>
 
+<div class="overflow-scroll">
 <table class="table mt-4">
     <thead>
         <tr>
@@ -29,10 +33,10 @@
                 <th class="align-middle" scope="row">@_event.Id</th>
                 <td class="align-middle">@_event.Title</td>
                 <td class="align-middle">@_event.IsOnline</td>
-                <td class="align-middle">@_event.Place</td>
+                <td class="align-middle">@_event.Place?.Name</td>
                 <td class="align-middle">@_event.Site</td>
-                <td class="align-middle">@_event.Facebook</td>
-                <td class="align-middle">@_event.Instagram</td>
+                <td class="align-middle text-truncate">@_event.Facebook</td>
+                <td class="align-middle text-truncate">@_event.Instagram</td>
                 <td class="align-middle">@_event.CreationTime</td>
                 <td class="align-middle">@_event.EventTime</td>
                 <td class="align-middle">@_event.Price</td>
@@ -54,5 +58,28 @@
         }
     </tbody>
 </table>
+</div>
 
 <a asp-action="Create" class="btn btn-primary">Create New Event</a>
+<div class="position-fixed top-0 end-0 p-3" style="z-index: 11">
+    <div id="toastr-block" data-bs-autohide="true" data-bs-animation="true" class="toast align-items-center text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                @toastrMsg?.Text
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+@if (toastrMsg != null)
+{
+    @section Scripts
+    {
+    <script>
+        var toastLiveExample = document.getElementById('toastr-block');
+        var toast = new bootstrap.Toast(toastLiveExample);
+        toast.show();
+    </script>
+    }
+}

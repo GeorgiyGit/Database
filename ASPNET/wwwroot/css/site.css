@@ -58,6 +58,12 @@ body {
     color: #E8998D;
 }
 
+.a-places:hover,
+.a-places:active {
+    color: #6C9A8B;
+}
+
+
 .a-text-green-h:hover,
 .a-text-green-h:active,
 .a-text-green-h:enabled {

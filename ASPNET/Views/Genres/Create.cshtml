@@ -1,0 +1,29 @@
+﻿@using Database.Models
+@model Genre;
+<h1 class="text-center mb-2">Create New Event</h1>
+
+<form asp-action="Create" method="post" class="row g-3">
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label">Title <span class="text-danger">*</span></label>
+        <input type="text" asp-for="Name" class="form-control">
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="ParentId" class="form-label">Parents</label>
+        <select asp-for="ParentId" asp-items="@ViewBag.TypeList" class="form-select">
+            <option selected></option></select>
+        <span asp-validation-for="ParentId" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <button asp-action="Manage" class="btn btn-secondary">Back</button>
+        @if (Model!=null)
+        {
+            <button type="submit" asp-action="Edit" class="btn btn-warning">Save</button>
+            @Html.HiddenFor(model => model.Id)
+        }
+        @if (Model == null)
+        {
+            <button type="submit" class="btn btn-primary">Create</button>
+        }
+    </div>
+</form>

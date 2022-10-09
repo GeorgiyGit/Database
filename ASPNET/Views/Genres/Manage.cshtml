@@ -1,48 +1,39 @@
 ﻿@using Database.Models
-@model IEnumerable<Place>;
+@model IEnumerable<Database.Models.Genre>;
 @{
     Toster? toastrMsg = TempData["ToastrMessage"] as Toster;
 }
 
-<h1 class="text-center">Place List</h1>
+<h1 class="text-center">Events List</h1>
+
 <div class="overflow-scroll">
 <table class="table mt-4">
     <thead>
         <tr>
             <th scope="col">#</th>
             <th scope="col">Name</th>
-            <th scope="col">Route</th>
-            <th scope="col">Site</th>
-            <th scope="col">Facebook</th>
-            <th scope="col">Instagram</th>
-            <th scope="col">Google maps</th>
-            <th scope="col">Owner</th>
-            <th scope="col">Place Types</th>
+            <th scope="col">Parent</th>
+            <th scope="col">Children</th>
             <th scope="col"></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var place in Model)
+        @foreach (var type in Model)
         {
             <tr>
-                <th class="align-middle" scope="row">@place.Id</th>
-                <td class="align-middle">@place.Name</td>
-                <td class="align-middle">@place.Route</td>
-                <td class="align-middle">@place.Site</td>
-                <td class="align-middle w-25">@place.Facebook</td>
-                <td class="align-middle w-25">@place.Instagram</td>
-                <td class="align-middle w-25">@place.GoogleMaps</td>
-                <td class="align-middle">@place.Owner?.Name</td>
-                 <td class="align-middle">
-                    @foreach(var type in @place.PlaceTypes)
-                    {
-                        <p>@type.Name</p>
-                    }
-                 </td>
+                <td class="align-middle" scope="row">@type.Id</td>
+                <td class="align-middle">@type.Name</td>
+                <td class="align-middle">@type.Parent?.Name</td>
+                <td class="align-middle">
+                    @foreach(var child in type.SubEventTypes)
+                        {
+                            <p>@child.Name</p>
+                        }
+                    </td>
                 <td class="align-middle">
                     <div class="btn-group" role="group">
-                        <a asp-action="Edit" asp-route-id="@place.Id" class="btn btn-warning">Edit</a>
-                        <a asp-action="Delete" asp-route-id="@place.Id" class="btn btn-danger">Delete</a>
+                        <a asp-action="Edit" asp-route-id="@type.Id" class="btn btn-warning">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@type.Id" class="btn btn-danger">Delete</a>
                     </div>
                 </td>
             </tr>
@@ -50,6 +41,7 @@
     </tbody>
 </table>
 </div>
+
 <a asp-action="Create" class="btn btn-primary">Create New Event</a>
 <div class="position-fixed top-0 end-0 p-3" style="z-index: 11">
     <div id="toastr-block" data-bs-autohide="true" data-bs-animation="true" class="toast align-items-center text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">

@@ -27,7 +27,7 @@ namespace Database.Models
 
 
         public ICollection<Event> Events { get; set; }
-        public ICollection<EventType> PlaceTypes { get; set; }
+        public ICollection<Genre> PlaceTypes { get; set; }
         public ICollection<Image> Images { get; set; }
 
         public Place()

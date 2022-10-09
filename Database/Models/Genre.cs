@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Database.Models
 {
-    public class EventType
+    public class Genre
     {
         public int Id { get; set; }
         public string Name { get; set; } = "";
@@ -14,13 +14,13 @@ namespace Database.Models
         public ICollection<Place> Places { get; set; }
 
         public int? ParentId { get; set; }
-        public EventType? Parent { get; set; }
-        public ICollection<EventType> SubEventTypes { get; }
+        public Genre? Parent { get; set; }
+        public ICollection<Genre> SubEventTypes { get; }
 
-        public EventType()
+        public Genre()
         {
             Events = new HashSet<Event>();
-            SubEventTypes = new HashSet<EventType>();
+            SubEventTypes = new HashSet<Genre>();
             Places = new HashSet<Place>();
         }
     }

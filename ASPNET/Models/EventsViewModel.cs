@@ -5,6 +5,6 @@ namespace ASPNET.Models
     public class EventsViewModel
     {
         public IEnumerable<Event> Events { get; set; }
-        public IEnumerable<EventType> EventTypes { get; set; }
+        public IEnumerable<Database.Models.Genre> EventTypes { get; set; }
     }
 }

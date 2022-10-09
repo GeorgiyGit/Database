@@ -54,7 +54,7 @@ namespace ASPNET.Controllers
 
             RemoveId(id);
 
-            return RedirectToAction("Details", "Events", new { id = id });
+            return RedirectToAction("Index", "Events", new { id = id });
         }
         private void RemoveId(int id)
         {

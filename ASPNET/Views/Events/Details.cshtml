@@ -1,5 +1,10 @@
-﻿@using Database.Models
+﻿@using ASPNET.Helpers
+@using Database.Models
 @model Event;
+@{
+    List<int> favoriteIds = Context.Session.Get<List<int>>(WebConstants.FAVORITE_EVENTS_LIST);
+    if (favoriteIds == null) favoriteIds = new List<int>();
+}
 
 <secion class="text-center">
     <h1>@Model.Title</h1>
@@ -9,7 +14,14 @@
   <div class="carousel-indicators">
       @for(int i=0;i<Model.Images.Count;i++)
         {
-            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="@i" class="active" aria-current="true" aria-label="Image @i"></button>
+            if (i == 0)
+            {
+                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="@i" class="active" aria-current="true" aria-label="Image @i"></button>
+            }
+            else
+            {
+                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="@i" aria-current="true" aria-label="Image @i"></button>
+            }
         }
   </div>
   <div class="carousel-inner">
@@ -48,6 +60,15 @@
 <div>
     <p>@Model.Text</p>
     <p>Price @Model.Price$</p>
+</div>
+<div>
+    @if (favoriteIds.Contains(Model.Id))
+    {
+        <a asp-controller="FavoriteEvents" asp-action="RemoveEvent" asp-route-id="@Model.Id" class="mb-1 btn btn-secondary">Remove From Favorites</a>
+    }
+    else{
+        <a asp-controller="FavoriteEvents" asp-action="AddEvent" asp-route-id="@Model.Id" class="mb-1 btn btn-primary">Add To Favorites</a>
+    }
 </div>
 <div class="sticz">
     @foreach(var type in Model.Types)

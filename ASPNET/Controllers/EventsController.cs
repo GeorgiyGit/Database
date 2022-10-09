@@ -18,7 +18,7 @@ namespace ASPNET.Controllers
 
         public IActionResult Index()
         {
-            var events = context.Events.Include(x => x.Images).Include(e=>e.Owner).ToList();
+            var events = context.Events.Include(x => x.Images).Include(e=>e.Owner).Include(e=>e.Place).ToList();
 
             EventsViewModel eventsViewModel = new EventsViewModel();
             eventsViewModel.Events = events;

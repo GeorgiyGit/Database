@@ -23,21 +23,21 @@
                 <div style="width: 18rem;">
                     <img src="@_event.Images.First()?.Path" class="card-img-top" alt="@_event.Images.First()?.Title">
                     <div class="cb-pink my-flex">
-                        <h5 class="w-auto">@_event.Title</h5>
+                        <h5 class="w-auto text-center">@_event.Title</h5>
                         <p class="w-auto">@_event.EventTime</p>
                         <p class="w-auto">@_event.Place?.Route</p>
                         <a asp-action="Details" asp-route-id="@_event.Id" class="btn btn-primary w-auto mb-1" aria-current="true">Details</a>
                         
                         @if (favoriteIds.Contains(_event.Id))
                         {
-                            <a asp-controller="FavoriteEvents" asp-action="RemoveEvent" asp-route-id="@_event.Id">
-                                <img src="/images/favorite_heart.png">
+                            <a asp-controller="FavoriteEvents" asp-action="RemoveEvent" asp-route-id="@_event.Id" class="mb-1">
+                                <img src="/images/favorite_heart.png" class="f-heart">
                             </a>
                         }
                         else
                         {
-                            <a asp-controller="FavoriteEvents" asp-action="AddEvent" asp-route-id="@_event.Id">
-                                <img src="/images/common_heart.png">
+                            <a asp-controller="FavoriteEvents" asp-action="AddEvent" asp-route-id="@_event.Id" class="mb-1">
+                                <img src="/images/favorite_heart.png" class="c-heart">
                             </a>
                         }
                         
@@ -53,5 +53,20 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+.f-heart,
+.c-heart{
+    width: auto;
+    height: 20px;
+    transition: 0.5s;
+}
+.f-heart:hover{
+    filter:grayscale(1);
+}
+.c-heart{
+    filter:grayscale(1);
+}
+.c-heart:hover{
+    filter:grayscale(0);
 }
 </style>

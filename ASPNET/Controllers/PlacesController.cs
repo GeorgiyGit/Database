@@ -30,7 +30,7 @@ namespace ASPNET.Controllers
         {
             if (id < 0) return BadRequest();
 
-            var place = context.Places.Where(x => x.Id == id).Include(x => x.Images).First();
+            var place = context.Places.Where(x => x.Id == id).Include(x => x.Images).Include(p=>p.PlaceTypes).First();
 
             if (place == null) return NotFound();
 

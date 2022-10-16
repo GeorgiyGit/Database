@@ -170,6 +170,7 @@ namespace Database
 
             modelBuilder.Entity<Event>().HasMany(e => e.Images)
                                         .WithOne(i => i.Event)
+                                        //.HasForeignKey(i => i.EventId)
                                         .IsRequired(false)
                                         .OnDelete(DeleteBehavior.Cascade);
         }
@@ -236,8 +237,10 @@ namespace Database
 
             modelBuilder.Entity<Place>().HasMany(p => p.Images)
                                         .WithOne(i => i.Place)
-                                        .IsRequired(false);
-                                        
+                                        //.HasForeignKey(i => i.PlaceId)
+                                        .IsRequired(false)
+                                        .OnDelete(DeleteBehavior.NoAction);
+
         }
     }
 }

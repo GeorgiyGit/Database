@@ -43,7 +43,7 @@
         @if (Model!=null)
         {
             <input type="url" hidden="hidden" asp-for="Id" value="@Model.Id">
-            <input hidden="hidden" asp-for="Images" value="@Model.Images">
+            //<input hidden="hidden" asp-for="Images" value="@Model.Images">
             <button type="submit" asp-action="Edit" class="btn btn-warning">Save</button>
         }
         @if(Model==null)

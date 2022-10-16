@@ -1,4 +1,5 @@
-﻿using ASPNET.Models;
+﻿using ASPNET.Helpers;
+using ASPNET.Models;
 using Database;
 using Database.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -81,13 +82,21 @@ namespace ASPNET.Controllers
             img2.Place = p;
             img3.Place = p;
 
+            context.Images.Add(img1);
+            context.Images.Add(img2);
+            context.Images.Add(img3);
+
             context.Places.Add(p);
             context.SaveChanges();
-            var events = context.Places.ToList();
 
-            TempData["ToastrMessage"] = "Place was created sucessfully!";
+            TempData[WebConstants.TOASTR_MESSAGE] = new Toster()
+            {
+                Text = "Place was created successully!",
+                Action = Models.Action.Create
+            };
+            var places = context.Places.Include(p => p.PlaceTypes).Include(e => e.Owner).ToList();
 
-            return View(nameof(Manage), events);
+            return View(nameof(Manage), places);
         }
 
         public IActionResult Edit(int id)
@@ -107,9 +116,13 @@ namespace ASPNET.Controllers
 
             context.Places.Update(p);
             context.SaveChanges();
-            var places = context.Places.ToList();
+            var places = context.Places.Include(p => p.PlaceTypes).Include(e => e.Owner).ToList();
 
-            TempData["ToastrMessage"] = "Place was changed sucessfully!";
+            TempData[WebConstants.TOASTR_MESSAGE] = new Toster()
+            {
+                Text = "Place was changed successully!",
+                Action = Models.Action.Update
+            };
 
             return View(nameof(Manage), places);
         }
@@ -118,16 +131,20 @@ namespace ASPNET.Controllers
         {
             if (id < 0) return BadRequest();
 
-            var place = context.Places.Where(p => p.Id == id).Include(p => p.Events).First();
+            var place = context.Places.Where(p => p.Id == id).Include(p => p.Events).Include(p=>p.Images).First();
 
             if (place == null) return NotFound();
 
             context.Places.Remove(place);
             context.SaveChanges();
+            var places = context.Places.Include(p => p.PlaceTypes).Include(e => e.Owner).ToList();
+            TempData[WebConstants.TOASTR_MESSAGE] = new Toster()
+            {
+                Text = "Place was delated successully!",
+                Action = Models.Action.Delete
+            };
 
-            TempData["ToastrMessage"] = "Place was deleted sucessfully!";
-
-            return RedirectToAction(nameof(Manage)); //View("Index");
+            return View(nameof(Manage),places);
         }
     }
 }

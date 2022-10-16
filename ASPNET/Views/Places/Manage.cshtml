@@ -1,7 +1,8 @@
 ﻿@using Database.Models
+@using ASPNET.Helpers
 @model IEnumerable<Place>;
 @{
-    Toster? toastrMsg = TempData["ToastrMessage"] as Toster;
+    Toster? toastrMsg = TempData[WebConstants.TOASTR_MESSAGE] as Toster;
 }
 
 <h1 class="text-center">Place List</h1>
@@ -52,7 +53,7 @@
 </div>
 <a asp-action="Create" class="btn btn-primary">Create New Event</a>
 <div class="position-fixed top-0 end-0 p-3" style="z-index: 11">
-    <div id="toastr-block" data-bs-autohide="true" data-bs-animation="true" class="toast align-items-center text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+    <div id="toastr-block" data-bs-autohide="true" data-bs-animation="true" class="toast align-items-center text-white btn-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="d-flex">
             <div class="toast-body">
                 @toastrMsg?.Text

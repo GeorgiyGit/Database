@@ -4,6 +4,7 @@ using Database.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using ASPNET.Helpers;
 
 namespace ASPNET.Controllers
 {
@@ -14,6 +15,18 @@ namespace ASPNET.Controllers
         public EventsController(EventsDbContext context)
         {
             this.context = context;
+
+            if (context.Users.Count() == 0)
+            {
+                User u = new User()
+                {
+                    Name = "Admin",
+                    Email = "Admin@gmail.com",
+                    Password = "1234"
+                };
+                context.Users.Add(u);
+                context.SaveChanges();
+            }
         }
 
         public IActionResult Index()
@@ -93,13 +106,18 @@ namespace ASPNET.Controllers
 
             context.Events.Add(ev);
             context.SaveChanges();
-            var events = context.Events.ToList();
 
-            TempData["ToastrMessage"] = "Event was created sucessfully!";
+            TempData[WebConstants.TOASTR_MESSAGE] = new Toster()
+            {
+                Text = "Event was created successully!",
+                Action = Models.Action.Create
+            };
+
+            var events = context.Events.Include(e => e.Place).Include(e => e.Owner).ToList();
 
             return View(nameof(Manage), events);
 
-            
+
         }
 
         public IActionResult Edit(int id)
@@ -122,9 +140,15 @@ namespace ASPNET.Controllers
 
             context.Events.Update(ev);
             context.SaveChanges();
-            var events = context.Events.ToList();
 
-            TempData["ToastrMessage"] = "Event was changed sucessfully!";
+
+            TempData[WebConstants.TOASTR_MESSAGE] = new Toster()
+            {
+                Text = "Event was changed successully!",
+                Action = Models.Action.Update
+            };
+
+            var events = context.Events.Include(e => e.Place).Include(e => e.Owner).ToList();
 
             return View(nameof(Manage), events);
         }
@@ -140,9 +164,15 @@ namespace ASPNET.Controllers
             context.Events.Remove(_event);
             context.SaveChanges();
 
-            TempData["ToastrMessage"] = "Event was deleted sucessfully!";
+            TempData[WebConstants.TOASTR_MESSAGE] = new Toster()
+            {
+                Text = "Event was deleteed successully!",
+                Action = Models.Action.Delete
+            };
 
-            return RedirectToAction(nameof(Manage));
+            var events = context.Events.Include(e => e.Place).Include(e => e.Owner).ToList();
+
+            return View(nameof(Manage), events);
         }
     }
 }

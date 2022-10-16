@@ -36,6 +36,7 @@ namespace Database.Models
             LikedUsers = new HashSet<User>();
             FavoriteUsers = new HashSet<User>();
             Images = new HashSet<Image>();
+            PlaceTypes = new HashSet<Genre>();
         }
 
     }

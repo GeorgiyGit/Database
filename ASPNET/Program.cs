@@ -8,7 +8,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<EventsDbContext>(x =>
 {
-    x.UseSqlServer(builder.Configuration.GetConnectionString("LocalProg"),
+    x.UseSqlServer(builder.Configuration.GetConnectionString("SomeeComHosting"),
     sqlServerOptionsAction: sqlOptions =>
     {
         sqlOptions.EnableRetryOnFailure(

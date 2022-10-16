@@ -4,7 +4,7 @@
 
 namespace Database.Migrations
 {
-    public partial class Initial4 : Migration
+    public partial class NoAtcionPlace : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -32,7 +32,7 @@ namespace Database.Migrations
                 column: "PlaceId",
                 principalTable: "Places",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.NoAction);
         }
     }
 }

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Database.Migrations
 {
     [DbContext(typeof(EventsDbContext))]
-    [Migration("20221001132758_Initial4")]
-    partial class Initial4
+    [Migration("20221009154804_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -169,7 +169,7 @@ namespace Database.Migrations
                     b.ToTable("Events");
                 });
 
-            modelBuilder.Entity("Database.Models.EventType", b =>
+            modelBuilder.Entity("Database.Models.Genre", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -189,7 +189,7 @@ namespace Database.Migrations
 
                     b.HasIndex("ParentId");
 
-                    b.ToTable("EventTypes");
+                    b.ToTable("Genres");
                 });
 
             modelBuilder.Entity("Database.Models.Image", b =>
@@ -316,7 +316,7 @@ namespace Database.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("EventEventType", b =>
+            modelBuilder.Entity("EventGenre", b =>
                 {
                     b.Property<int>("EventsId")
                         .HasColumnType("int");
@@ -328,22 +328,7 @@ namespace Database.Migrations
 
                     b.HasIndex("TypesId");
 
-                    b.ToTable("EventEventType");
-                });
-
-            modelBuilder.Entity("EventTypePlace", b =>
-                {
-                    b.Property<int>("PlaceTypesId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PlacesId")
-                        .HasColumnType("int");
-
-                    b.HasKey("PlaceTypesId", "PlacesId");
-
-                    b.HasIndex("PlacesId");
-
-                    b.ToTable("EventTypePlace");
+                    b.ToTable("EventGenre");
                 });
 
             modelBuilder.Entity("EventUser", b =>
@@ -374,6 +359,21 @@ namespace Database.Migrations
                     b.HasIndex("FavoriteUsersId");
 
                     b.ToTable("EventUser1");
+                });
+
+            modelBuilder.Entity("GenrePlace", b =>
+                {
+                    b.Property<int>("PlaceTypesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PlacesId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PlaceTypesId", "PlacesId");
+
+                    b.HasIndex("PlacesId");
+
+                    b.ToTable("GenrePlace");
                 });
 
             modelBuilder.Entity("PlaceUser", b =>
@@ -483,9 +483,9 @@ namespace Database.Migrations
                     b.Navigation("Place");
                 });
 
-            modelBuilder.Entity("Database.Models.EventType", b =>
+            modelBuilder.Entity("Database.Models.Genre", b =>
                 {
-                    b.HasOne("Database.Models.EventType", "Parent")
+                    b.HasOne("Database.Models.Genre", "Parent")
                         .WithMany("SubEventTypes")
                         .HasForeignKey("ParentId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -526,7 +526,7 @@ namespace Database.Migrations
                     b.Navigation("Owner");
                 });
 
-            modelBuilder.Entity("EventEventType", b =>
+            modelBuilder.Entity("EventGenre", b =>
                 {
                     b.HasOne("Database.Models.Event", null)
                         .WithMany()
@@ -534,24 +534,9 @@ namespace Database.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Database.Models.EventType", null)
+                    b.HasOne("Database.Models.Genre", null)
                         .WithMany()
                         .HasForeignKey("TypesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("EventTypePlace", b =>
-                {
-                    b.HasOne("Database.Models.EventType", null)
-                        .WithMany()
-                        .HasForeignKey("PlaceTypesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Database.Models.Place", null)
-                        .WithMany()
-                        .HasForeignKey("PlacesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -582,6 +567,21 @@ namespace Database.Migrations
                     b.HasOne("Database.Models.User", null)
                         .WithMany()
                         .HasForeignKey("FavoriteUsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("GenrePlace", b =>
+                {
+                    b.HasOne("Database.Models.Genre", null)
+                        .WithMany()
+                        .HasForeignKey("PlaceTypesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Database.Models.Place", null)
+                        .WithMany()
+                        .HasForeignKey("PlacesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -628,7 +628,7 @@ namespace Database.Migrations
                     b.Navigation("Images");
                 });
 
-            modelBuilder.Entity("Database.Models.EventType", b =>
+            modelBuilder.Entity("Database.Models.Genre", b =>
                 {
                     b.Navigation("SubEventTypes");
                 });

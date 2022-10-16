@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Database.Migrations
 {
     [DbContext(typeof(EventsDbContext))]
-    [Migration("20220925124507_Initial")]
-    partial class Initial
+    [Migration("20221016085851_removeEventIdAndPlaceId")]
+    partial class removeEventIdAndPlaceId
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -26,30 +26,30 @@ namespace Database.Migrations
 
             modelBuilder.Entity("CommentUser", b =>
                 {
-                    b.Property<int>("LikeUsersId")
-                        .HasColumnType("int");
-
                     b.Property<int>("LikedCommentsId")
                         .HasColumnType("int");
 
-                    b.HasKey("LikeUsersId", "LikedCommentsId");
+                    b.Property<int>("LikedUsersId")
+                        .HasColumnType("int");
 
-                    b.HasIndex("LikedCommentsId");
+                    b.HasKey("LikedCommentsId", "LikedUsersId");
+
+                    b.HasIndex("LikedUsersId");
 
                     b.ToTable("CommentUser");
                 });
 
             modelBuilder.Entity("CommentUser1", b =>
                 {
-                    b.Property<int>("DislikeUsersId")
-                        .HasColumnType("int");
-
                     b.Property<int>("DislikedCommentsId")
                         .HasColumnType("int");
 
-                    b.HasKey("DislikeUsersId", "DislikedCommentsId");
+                    b.Property<int>("DislikedUsersId")
+                        .HasColumnType("int");
 
-                    b.HasIndex("DislikedCommentsId");
+                    b.HasKey("DislikedCommentsId", "DislikedUsersId");
+
+                    b.HasIndex("DislikedUsersId");
 
                     b.ToTable("CommentUser1");
                 });
@@ -68,6 +68,9 @@ namespace Database.Migrations
                     b.Property<int>("Dislikes")
                         .HasColumnType("int");
 
+                    b.Property<int?>("EventId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsChanged")
                         .HasColumnType("bit");
 
@@ -80,6 +83,9 @@ namespace Database.Migrations
                     b.Property<int?>("ParentId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("PlaceId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Text")
                         .IsRequired()
                         .HasMaxLength(1000)
@@ -87,9 +93,13 @@ namespace Database.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("EventId");
+
                     b.HasIndex("OwnerId");
 
                     b.HasIndex("ParentId");
+
+                    b.HasIndex("PlaceId");
 
                     b.ToTable("Comments");
                 });
@@ -108,11 +118,37 @@ namespace Database.Migrations
                     b.Property<DateTime>("EventTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Facebook")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Instagram")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<bool>("IsModerated")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsOnline")
+                        .HasColumnType("bit");
+
                     b.Property<int>("OwnerId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PlaceId")
                         .HasColumnType("int");
 
                     b.Property<int>("Price")
                         .HasColumnType("int");
+
+                    b.Property<int>("Rating")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
+
+                    b.Property<string>("Site")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("Text")
                         .IsRequired()
@@ -128,10 +164,12 @@ namespace Database.Migrations
 
                     b.HasIndex("OwnerId");
 
+                    b.HasIndex("PlaceId");
+
                     b.ToTable("Events");
                 });
 
-            modelBuilder.Entity("Database.Models.EventType", b =>
+            modelBuilder.Entity("Database.Models.Genre", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -144,9 +182,14 @@ namespace Database.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.ToTable("EventTypes");
+                    b.HasIndex("ParentId");
+
+                    b.ToTable("Genres");
                 });
 
             modelBuilder.Entity("Database.Models.Image", b =>
@@ -164,6 +207,9 @@ namespace Database.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("PlaceId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Title")
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
@@ -175,11 +221,68 @@ namespace Database.Migrations
 
                     b.HasIndex("EventId");
 
+                    b.HasIndex("PlaceId");
+
                     b.HasIndex("UserId")
                         .IsUnique()
                         .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("Images");
+                });
+
+            modelBuilder.Entity("Database.Models.Place", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Facebook")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("GoogleMaps")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Instagram")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("OwnerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Rating")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
+
+                    b.Property<string>("Route")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Site")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasMaxLength(3000)
+                        .HasColumnType("nvarchar(3000)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OwnerId");
+
+                    b.ToTable("Places");
                 });
 
             modelBuilder.Entity("Database.Models.User", b =>
@@ -213,7 +316,7 @@ namespace Database.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("EventEventType", b =>
+            modelBuilder.Entity("EventGenre", b =>
                 {
                     b.Property<int>("EventsId")
                         .HasColumnType("int");
@@ -225,7 +328,7 @@ namespace Database.Migrations
 
                     b.HasIndex("TypesId");
 
-                    b.ToTable("EventEventType");
+                    b.ToTable("EventGenre");
                 });
 
             modelBuilder.Entity("EventUser", b =>
@@ -258,38 +361,87 @@ namespace Database.Migrations
                     b.ToTable("EventUser1");
                 });
 
+            modelBuilder.Entity("GenrePlace", b =>
+                {
+                    b.Property<int>("PlaceTypesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PlacesId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PlaceTypesId", "PlacesId");
+
+                    b.HasIndex("PlacesId");
+
+                    b.ToTable("GenrePlace");
+                });
+
+            modelBuilder.Entity("PlaceUser", b =>
+                {
+                    b.Property<int>("LikedPlacesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LikedUsersId")
+                        .HasColumnType("int");
+
+                    b.HasKey("LikedPlacesId", "LikedUsersId");
+
+                    b.HasIndex("LikedUsersId");
+
+                    b.ToTable("PlaceUser");
+                });
+
+            modelBuilder.Entity("PlaceUser1", b =>
+                {
+                    b.Property<int>("FavoritePlacesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FavoriteUsersId")
+                        .HasColumnType("int");
+
+                    b.HasKey("FavoritePlacesId", "FavoriteUsersId");
+
+                    b.HasIndex("FavoriteUsersId");
+
+                    b.ToTable("PlaceUser1");
+                });
+
             modelBuilder.Entity("CommentUser", b =>
                 {
-                    b.HasOne("Database.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("LikeUsersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Database.Models.Comment", null)
                         .WithMany()
                         .HasForeignKey("LikedCommentsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Database.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("LikedUsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("CommentUser1", b =>
                 {
-                    b.HasOne("Database.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("DislikeUsersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Database.Models.Comment", null)
                         .WithMany()
                         .HasForeignKey("DislikedCommentsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Database.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("DislikedUsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("Database.Models.Comment", b =>
                 {
+                    b.HasOne("Database.Models.Event", "Event")
+                        .WithMany("Comments")
+                        .HasForeignKey("EventId");
+
                     b.HasOne("Database.Models.User", "Owner")
                         .WithMany("CreatedComments")
                         .HasForeignKey("OwnerId")
@@ -301,9 +453,17 @@ namespace Database.Migrations
                         .HasForeignKey("ParentId")
                         .OnDelete(DeleteBehavior.Restrict);
 
+                    b.HasOne("Database.Models.Place", "Place")
+                        .WithMany("Comments")
+                        .HasForeignKey("PlaceId");
+
+                    b.Navigation("Event");
+
                     b.Navigation("Owner");
 
                     b.Navigation("Parent");
+
+                    b.Navigation("Place");
                 });
 
             modelBuilder.Entity("Database.Models.Event", b =>
@@ -314,14 +474,36 @@ namespace Database.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Database.Models.Place", "Place")
+                        .WithMany("Events")
+                        .HasForeignKey("PlaceId");
+
                     b.Navigation("Owner");
+
+                    b.Navigation("Place");
+                });
+
+            modelBuilder.Entity("Database.Models.Genre", b =>
+                {
+                    b.HasOne("Database.Models.Genre", "Parent")
+                        .WithMany("SubEventTypes")
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Parent");
                 });
 
             modelBuilder.Entity("Database.Models.Image", b =>
                 {
                     b.HasOne("Database.Models.Event", "Event")
                         .WithMany("Images")
-                        .HasForeignKey("EventId");
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Database.Models.Place", "Place")
+                        .WithMany("Images")
+                        .HasForeignKey("PlaceId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Database.Models.User", "User")
                         .WithOne("Avatar")
@@ -329,10 +511,23 @@ namespace Database.Migrations
 
                     b.Navigation("Event");
 
+                    b.Navigation("Place");
+
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("EventEventType", b =>
+            modelBuilder.Entity("Database.Models.Place", b =>
+                {
+                    b.HasOne("Database.Models.User", "Owner")
+                        .WithMany("CreatedPlaces")
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Owner");
+                });
+
+            modelBuilder.Entity("EventGenre", b =>
                 {
                     b.HasOne("Database.Models.Event", null)
                         .WithMany()
@@ -340,7 +535,7 @@ namespace Database.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Database.Models.EventType", null)
+                    b.HasOne("Database.Models.Genre", null)
                         .WithMany()
                         .HasForeignKey("TypesId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -377,6 +572,51 @@ namespace Database.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("GenrePlace", b =>
+                {
+                    b.HasOne("Database.Models.Genre", null)
+                        .WithMany()
+                        .HasForeignKey("PlaceTypesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Database.Models.Place", null)
+                        .WithMany()
+                        .HasForeignKey("PlacesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PlaceUser", b =>
+                {
+                    b.HasOne("Database.Models.Place", null)
+                        .WithMany()
+                        .HasForeignKey("LikedPlacesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Database.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("LikedUsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PlaceUser1", b =>
+                {
+                    b.HasOne("Database.Models.Place", null)
+                        .WithMany()
+                        .HasForeignKey("FavoritePlacesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Database.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("FavoriteUsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Database.Models.Comment", b =>
                 {
                     b.Navigation("SubComments");
@@ -384,6 +624,22 @@ namespace Database.Migrations
 
             modelBuilder.Entity("Database.Models.Event", b =>
                 {
+                    b.Navigation("Comments");
+
+                    b.Navigation("Images");
+                });
+
+            modelBuilder.Entity("Database.Models.Genre", b =>
+                {
+                    b.Navigation("SubEventTypes");
+                });
+
+            modelBuilder.Entity("Database.Models.Place", b =>
+                {
+                    b.Navigation("Comments");
+
+                    b.Navigation("Events");
+
                     b.Navigation("Images");
                 });
 
@@ -394,6 +650,8 @@ namespace Database.Migrations
                     b.Navigation("CreatedComments");
 
                     b.Navigation("CreatedEvents");
+
+                    b.Navigation("CreatedPlaces");
                 });
 #pragma warning restore 612, 618
         }

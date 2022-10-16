@@ -43,6 +43,7 @@ namespace Database.Models
             Comments = new HashSet<Comment>();
 
             CreationTime = DateTime.Now;
+            
         }
     }
 }

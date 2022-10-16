@@ -1,4 +1,6 @@
-﻿using Database;
+﻿using ASPNET.Helpers;
+using ASPNET.Models;
+using Database;
 using Database.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -39,7 +41,11 @@ namespace ASPNET.Controllers
             context.SaveChanges();
             var genres = context.Genres.ToList();
 
-            TempData["ToastrMessage"] = "Genre was created sucessfully!";
+            TempData[WebConstants.TOASTR_MESSAGE] = new Toster()
+            {
+                Text = "Type was created successully!",
+                Action = Models.Action.Create
+            };
 
             return View(nameof(Manage), genres);
         }
@@ -61,7 +67,11 @@ namespace ASPNET.Controllers
             context.SaveChanges();
             var genres = context.Genres.ToList();
 
-            TempData["ToastrMessage"] = "Genre was changed sucessfully!";
+            TempData[WebConstants.TOASTR_MESSAGE] = new Toster()
+            {
+                Text = "Type was changed successully!",
+                Action = Models.Action.Update
+            };
 
             return View(nameof(Manage), genres);
         }
@@ -77,7 +87,11 @@ namespace ASPNET.Controllers
             context.Genres.Remove(genre);
             context.SaveChanges();
 
-            TempData["ToastrMessage"] = "Genre was deleted sucessfully!";
+            TempData[WebConstants.TOASTR_MESSAGE] = new Toster()
+            {
+                Text = "Type was delated successully!",
+                Action = Models.Action.Delete
+            };
 
             return RedirectToAction(nameof(Manage)); //View("Index");
         }

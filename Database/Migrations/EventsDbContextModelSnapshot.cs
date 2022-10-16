@@ -500,7 +500,8 @@ namespace Database.Migrations
 
                     b.HasOne("Database.Models.Place", "Place")
                         .WithMany("Images")
-                        .HasForeignKey("PlaceId");
+                        .HasForeignKey("PlaceId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("Database.Models.User", "User")
                         .WithOne("Avatar")

@@ -1,7 +1,8 @@
-﻿@using Database.Models
+﻿@using ASPNET.Helpers
+@using Database.Models
 @model IEnumerable<Database.Models.Genre>;
 @{
-    Toster? toastrMsg = TempData["ToastrMessage"] as Toster;
+    Toster? toastrMsg = TempData[WebConstants.TOASTR_MESSAGE] as Toster;
 }
 
 <h1 class="text-center">Events List</h1>

@@ -1,7 +1,7 @@
 ﻿@using ASPNET.Helpers
 @model EventsViewModel;
 @{
-    List<int> favoriteIds = Context.Session.Get<List<int>>(WebConstants.FAVORITE_EVENTS_LIST);
+    List<int> favoriteIds = ViewData["test"] as List<int>;
     if (favoriteIds == null) favoriteIds = new List<int>();
 }
 <div>

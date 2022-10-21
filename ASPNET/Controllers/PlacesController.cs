@@ -2,6 +2,7 @@
 using ASPNET.Models;
 using Database;
 using Database.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -11,10 +12,12 @@ namespace ASPNET.Controllers
     public class PlacesController : Controller
     {
         private readonly EventsDbContext context;
+        private readonly UserManager<User> userManager;
 
-        public PlacesController(EventsDbContext context)
+        public PlacesController(EventsDbContext context, UserManager<User> userManager)
         {
             this.context = context;
+            this.userManager = userManager;
         }
         public IActionResult Index()
         {
@@ -50,11 +53,13 @@ namespace ASPNET.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Create(Place p)
+        public async Task<IActionResult> Create(Place p)
         {
-            p.Owner = context.Users.First();
+            if (HttpContext.User.Identity == null) return BadRequest();
+            var user = await userManager.FindByNameAsync(HttpContext.User.Identity.Name);
 
-            p.Owner.CreatedPlaces.Add(p);
+            p.Owner = user;
+            user.CreatedPlaces.Add(p);
 
             Image img1 = new Image()
             {
@@ -107,12 +112,13 @@ namespace ASPNET.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(Place p)
+        public async Task<IActionResult> Edit(Place p)
         {
-            p.Owner = context.Users.First();
-            p.Owner.CreatedPlaces.Add(p);
+            if (HttpContext.User.Identity == null) return BadRequest();
+            var user = await userManager.FindByNameAsync(HttpContext.User.Identity.Name);
 
-            //if (!ModelState.IsValid) return View(ev);
+            p.Owner = user;
+            user.CreatedPlaces.Add(p);
 
             context.Places.Update(p);
             context.SaveChanges();

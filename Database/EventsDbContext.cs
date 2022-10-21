@@ -1,4 +1,6 @@
 ﻿using Database.Models;
+using Microsoft.AspNetCore.Identity;
+//using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,19 +10,21 @@ using System.Threading.Tasks;
 
 namespace Database
 {
-    public class EventsDbContext : DbContext
+    public class EventsDbContext : Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityDbContext<User>
     {
         public virtual DbSet<Comment> Comments { get; set; }
         public virtual DbSet<Event> Events { get; set; }
         public virtual DbSet<Models.Genre> Genres { get; set; }
         public virtual DbSet<Image> Images { get; set; }
-        public virtual DbSet<User> Users { get; set; }
+        //public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Place> Places { get; set; }
         public EventsDbContext(DbContextOptions options) : base(options)
         {
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Image>().Property(i => i.Title)
                                         .HasMaxLength(200)
                                         .IsRequired(false);
@@ -36,17 +40,20 @@ namespace Database
         }
         private void OnUserCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>().Property(u => u.Name)
-                                       .HasMaxLength(100)
+            modelBuilder.Entity<User>().Property(u => u.IsMan)
                                        .IsRequired(true);
+                    
+            //modelBuilder.Entity<User>().Property(u => u.Name)
+            //.HasMaxLength(100)
+            //.IsRequired(true);
 
-            modelBuilder.Entity<User>().Property(u => u.Email)
-                                       .HasMaxLength(200)
-                                       .IsRequired(true);
+            //modelBuilder.Entity<User>().Property(u => u.Email)
+            //.HasMaxLength(200)
+            //.IsRequired(true);
 
-            modelBuilder.Entity<User>().Property(u => u.Password)
-                                       .HasMaxLength(50)
-                                       .IsRequired(true);
+            //modelBuilder.Entity<User>().Property(u => u.Password)
+            //.HasMaxLength(50)
+            //.IsRequired(true);
 
             modelBuilder.Entity<User>().Property(u => u.CreationTime)
                                        .IsRequired(true);

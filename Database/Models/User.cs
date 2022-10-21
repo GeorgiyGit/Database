@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,19 +7,20 @@ using System.Threading.Tasks;
 
 namespace Database.Models
 {
-    public class User
+    public class User : IdentityUser
     {
-        public int Id { get; set; }
-        public string Name { get; set; } = "";
-        public string Email { get; set; } = "";
-        public string Password { get; set; } = "";
+        //public int Id { get; set; }
+        //public string Name { get; set; } = "";
+        //public string Email { get; set; } = "";
+        //public string Password { get; set; } = "";
+        public bool IsMan { get; set; }
         public DateTime CreationTime { get; set; }
-        
+
         public ICollection<Comment> CreatedComments { get; set; }
         public ICollection<Comment> LikedComments { get; set; }
         public ICollection<Comment> DislikedComments { get; set; }
 
-        public ICollection<Event> CreatedEvents { get;set; }
+        public ICollection<Event> CreatedEvents { get; set; }
         public ICollection<Event> LikedEvents { get; set; }
         public ICollection<Event> FavoriteEvents { get; set; }
 

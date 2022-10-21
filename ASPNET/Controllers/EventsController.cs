@@ -5,31 +5,34 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ASPNET.Helpers;
+using Microsoft.AspNetCore.Identity;
 
 namespace ASPNET.Controllers
 {
     public class EventsController : Controller
     {
         private readonly EventsDbContext context;
+        private readonly UserManager<User> userManager;
 
-        public EventsController(EventsDbContext context)
+        public EventsController(EventsDbContext context, UserManager<User> userManager)
         {
             this.context = context;
+            this.userManager = userManager;
 
-            if (context.Users.Count() == 0)
-            {
-                User u = new User()
-                {
-                    Name = "Admin",
-                    Email = "Admin@gmail.com",
-                    Password = "1234"
-                };
-                context.Users.Add(u);
-                context.SaveChanges();
-            }
+            //if (context.Users. == 0)
+            //{
+            //User u = new User()
+            //{
+            //Name = "Admin",
+            //Email = "Admin@gmail.com",
+            ///Password = "1234"
+            //};
+            //context.Users.Add(u);
+            //context.SaveChanges();
+            //}
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             var events = context.Events.Include(x => x.Images).Include(e=>e.Owner).Include(e=>e.Place).ToList();
 
@@ -37,6 +40,14 @@ namespace ASPNET.Controllers
             eventsViewModel.Events = events;
             eventsViewModel.EventTypes = context.Genres.ToList();
 
+            if (HttpContext.User.Identity == null) return BadRequest();
+            var user = context.Users.Where(u => u.UserName == HttpContext.User.Identity.Name).Include(u => u.FavoriteEvents).First();//await userManager.FindByNameAsync(HttpContext.User.Identity.Name);
+
+            ViewData["test"] = new SelectList(user.FavoriteEvents, nameof(Event.Id), nameof(Event.Id))
+                                             .ToList()
+                                             .Select(x => int.Parse(x.Value)).ToList();
+
+            //ViewBag.FavoriteEvents = new SelectList(user.FavoriteEvents, nameof(Event.Id), nameof(Event.Id));
             return View(eventsViewModel);
         }
 
@@ -68,10 +79,13 @@ namespace ASPNET.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Create(Event ev)
+        public async Task<IActionResult> Create(Event ev)
         {
-            ev.Owner = context.Users.First();
-            ev.Owner.CreatedEvents.Add(ev);
+            if (HttpContext.User.Identity == null) return BadRequest();
+            var user = await userManager.FindByNameAsync(HttpContext.User.Identity.Name);
+            
+            ev.Owner = user;
+            user.CreatedEvents.Add(ev);
 
             Image img1 = new Image()
             {
@@ -130,13 +144,13 @@ namespace ASPNET.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(Event ev)
+        public async Task<IActionResult> Edit(Event ev)
         {
-            ev.Owner = context.Users.First();
+            if (HttpContext.User.Identity == null) return BadRequest();
+            var user = await userManager.FindByNameAsync(HttpContext.User.Identity.Name);
 
-            ev.Owner.CreatedEvents.Add(ev);
-
-            //if (!ModelState.IsValid) return View(ev);
+            ev.Owner = user;
+            user.CreatedEvents.Add(ev);
 
             context.Events.Update(ev);
             context.SaveChanges();
